@@ -2,10 +2,18 @@ package ru.jdeveloperapps.videomeeting
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import ru.jdeveloperapps.videomeeting.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySignUpBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.imageBack.setOnClickListener { onBackPressed() }
+        binding.textSignIn.setOnClickListener { onBackPressed() }
     }
 }
