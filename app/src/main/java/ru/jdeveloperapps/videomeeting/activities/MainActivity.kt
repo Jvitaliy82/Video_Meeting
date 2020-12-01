@@ -1,7 +1,8 @@
-package ru.jdeveloperapps.videomeeting
+package ru.jdeveloperapps.videomeeting.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import ru.jdeveloperapps.videomeeting.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

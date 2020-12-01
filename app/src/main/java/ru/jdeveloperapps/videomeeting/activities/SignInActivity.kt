@@ -1,7 +1,8 @@
-package ru.jdeveloperapps.videomeeting
+package ru.jdeveloperapps.videomeeting.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import ru.jdeveloperapps.videomeeting.databinding.ActivitySignInBinding
 
@@ -15,7 +16,10 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.textSignUp.setOnClickListener {
+            Log.d("FCM", "test logging")
             startActivity(Intent(applicationContext, SignUpActivity::class.java))
         }
+
+
     }
 }
