@@ -18,4 +18,5 @@
     <string name="doe">Doe</string>
     <string name="confirm_password">Confirm password</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

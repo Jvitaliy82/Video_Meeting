@@ -66,8 +66,9 @@ class SignUpActivity : AppCompatActivity() {
 
         database.collection(Constants.KEY_COLLECTIONS_USERS)
             .add(user)
-            .addOnSuccessListener {
+            .addOnSuccessListener { documentPreference ->
                 preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
+                preferenceManager.putString(Constants.KEY_USER_ID, documentPreference.id)
                 preferenceManager.putString(
                     Constants.KEY_FIRST_NAME,
                     binding.inputFirstName.text.toString()

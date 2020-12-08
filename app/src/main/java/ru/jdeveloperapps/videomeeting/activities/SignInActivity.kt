@@ -63,6 +63,7 @@ class SignInActivity : AppCompatActivity() {
                     && task.result?.documents?.size!! > 0) {
                     val document = task.getResult()!!.documents[0]
                     preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
+                    preferenceManager.putString(Constants.KEY_USER_ID, document.id)
                     preferenceManager.putString(Constants.KEY_FIRST_NAME,
                         document.getString(Constants.KEY_FIRST_NAME)!!)
                     preferenceManager.putString(Constants.KEY_LAST_NAME,
