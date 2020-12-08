@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -19,12 +19,12 @@
 
             <LinearLayout
                 android:id="@+id/layoutHeader"
+                app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
-                android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -38,9 +38,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:fontFamily="@font/ubuntu_bold"
                     android:includeFontPadding="false"
-                    android:layout_marginTop="@dimen/_4sdp"
                     android:text="@string/video_meeting_conference_app"
                     android:textColor="@color/colorTextIcons"
                     android:textSize="@dimen/_16ssp" />
@@ -48,6 +48,9 @@
 
             <TextView
                 android:id="@+id/textSignInLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
@@ -55,20 +58,17 @@
                 android:includeFontPadding="false"
                 android:text="@string/sign_in_to_your_account"
                 android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/_15ssp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layoutHeader" />
+                android:textSize="@dimen/_15ssp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSignIn"
+                app:cardCornerRadius="@dimen/_4sdp"
+                app:layout_constraintTop_toBottomOf="@id/textSignInLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_20sdp"
-                app:cardCornerRadius="@dimen/_4sdp"
-                app:layout_constraintTop_toBottomOf="@id/textSignInLabel">
+                android:layout_marginEnd="@dimen/_20sdp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -79,8 +79,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_8sdp"
                         android:fontFamily="@font/ubuntu_regular"
                         android:includeFontPadding="false"
@@ -108,8 +108,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_8sdp"
                         android:fontFamily="@font/ubuntu_regular"
                         android:includeFontPadding="false"
@@ -141,46 +141,56 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonSignIn"
+                app:layout_constraintTop_toBottomOf="@id/cardSignIn"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:fontFamily="@font/ubuntu_bold"
                 android:includeFontPadding="false"
                 android:text="@string/sign_in"
                 android:textColor="@color/colorTextIcons"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintTop_toBottomOf="@id/cardSignIn" />
+                android:textSize="@dimen/_13ssp" />
+
+            <ProgressBar
+                android:id="@+id/signInProgressBar"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/buttonSignIn"
+                app:layout_constraintTop_toTopOf="@id/buttonSignIn"
+                app:layout_constraintStart_toStartOf="@id/buttonSignIn"
+                app:layout_constraintEnd_toEndOf="@id/buttonSignIn" />
 
             <TextView
                 android:id="@+id/textNoAccount"
+                app:layout_constraintTop_toBottomOf="@id/buttonSignIn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
-                android:gravity="center"
                 android:fontFamily="@font/ubuntu_regular"
+                android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="@string/don_t_have_an_account"
                 android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintTop_toBottomOf="@id/buttonSignIn" />
+                android:textSize="@dimen/_13ssp" />
 
             <TextView
                 android:id="@+id/textSignUp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textNoAccount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_20sdp"
                 android:fontFamily="@font/ubuntu_bold"
-                android:includeFontPadding="false"
                 android:gravity="center"
+                android:includeFontPadding="false"
                 android:padding="@dimen/_6sdp"
                 android:text="@string/sing_up"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintTop_toBottomOf="@id/textNoAccount"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:textSize="@dimen/_14ssp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
