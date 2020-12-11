@@ -8,9 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.jdeveloperapps.videomeeting.R
 import ru.jdeveloperapps.videomeeting.databinding.ItemContainerUserBinding
+import ru.jdeveloperapps.videomeeting.listeners.UsersListeners
 import ru.jdeveloperapps.videomeeting.models.User
 
-class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>(){
+class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
+
+    private var userListener: UsersListeners? = null
+
+    fun setListener(listener: UsersListeners) {
+        userListener = listener
+    }
 
     class UsersHolder(val binding: ItemContainerUserBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -38,6 +45,12 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>(){
     override fun onBindViewHolder(holder: UsersHolder, position: Int) {
         val currentUser = differ.currentList[position]
         holder.binding.apply {
+            imageAudioMeeting.setOnClickListener {
+                userListener?.initiateAudioMeeting(currentUser)
+            }
+            imageVideoMeeting.setOnClickListener {
+                userListener?.initiateVideoMeeting(currentUser)
+            }
             user = currentUser
         }
     }

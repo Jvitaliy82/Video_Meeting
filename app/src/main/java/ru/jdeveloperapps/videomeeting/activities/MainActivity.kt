@@ -10,11 +10,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import ru.jdeveloperapps.videomeeting.adapters.UsersAdapter
 import ru.jdeveloperapps.videomeeting.databinding.ActivityMainBinding
+import ru.jdeveloperapps.videomeeting.listeners.UsersListeners
 import ru.jdeveloperapps.videomeeting.models.User
 import ru.jdeveloperapps.videomeeting.utilites.Constants
 import ru.jdeveloperapps.videomeeting.utilites.PreferenceManager
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UsersListeners {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferenceManager: PreferenceManager
@@ -44,16 +45,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.usersRecyclerView.adapter = usersAdapter
+        usersAdapter.setListener(this)
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getUsers()
+        }
+
         getUsers()
     }
 
     private fun getUsers() {
-        binding.userProgressBar.visibility = View.VISIBLE
         val database = FirebaseFirestore.getInstance()
         database.collection(Constants.KEY_COLLECTIONS_USERS)
             .get()
             .addOnCompleteListener { task ->
-                binding.userProgressBar.visibility = View.GONE
                 val myUserId = preferenceManager.getString(Constants.KEY_USER_ID)
                 if (task.isSuccessful && task.getResult() != null) {
                     task.getResult()?.let {
@@ -70,8 +75,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         usersAdapter.differ.submitList(listUsers)
+                        binding.swipeRefreshLayout.isRefreshing = false
                     }
                 } else {
+                    binding.swipeRefreshLayout.isRefreshing = false
                     binding.textErrorMessage.text = "No users avaiable"
                     binding.textErrorMessage.visibility = View.VISIBLE
                 }
@@ -115,5 +122,38 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(applicationContext, "Failure sign out", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    override fun initiateVideoMeeting(user: User) {
+        if (user.token.isEmpty()) {
+            Toast.makeText(
+                applicationContext,
+                "${user.firstName} ${user.lastName} is not avaiable for video meeting",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val intent = Intent(applicationContext, OutgoingInvitationActivity::class.java)
+            intent.apply {
+                putExtra("user", user)
+                putExtra("type", "video")
+            }
+            startActivity(intent)
+        }
+    }
+
+    override fun initiateAudioMeeting(user: User) {
+        if (user.token.isEmpty()) {
+            Toast.makeText(
+                applicationContext,
+                "${user.firstName} ${user.lastName} is not avaiable for audio meeting",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "audio meeting with ${user.firstName} ${user.lastName}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
