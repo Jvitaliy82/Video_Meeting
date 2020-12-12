@@ -1,7 +1,6 @@
 package ru.jdeveloperapps.videomeeting.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
@@ -91,7 +90,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(
                 applicationContext,
-                e.message,
+                "${e.message} что то с отправкой",
                 Toast.LENGTH_SHORT
             ).show()
             finish()
@@ -100,7 +99,6 @@ class OutgoingInvitationActivity : AppCompatActivity() {
 
     private fun sendingRemoteMessage(remoteMessageBody: String, type: String) {
         GlobalScope.launch(Dispatchers.Main) {
-            Log.d("M1", remoteMessageBody)
             val response = RetrofitInstance.api.sendRemoteMessage(
                 Constants.getRemoteMessageHeaders(),
                 remoteMessageBody

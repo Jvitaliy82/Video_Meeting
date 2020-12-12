@@ -7,7 +7,7 @@ class RetrofitInstance {
     companion object {
         private val retrofit by lazy {
             Retrofit.Builder()
-                .baseUrl("https://fcm.googleapis.com/fcm/send/")
+                .baseUrl("https://fcm.googleapis.com/fcm/")
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build()
         }

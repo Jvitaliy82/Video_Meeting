@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import ru.jdeveloperapps.videomeeting.adapters.UsersAdapter
 import ru.jdeveloperapps.videomeeting.databinding.ActivityMainBinding
 import ru.jdeveloperapps.videomeeting.listeners.UsersListeners
@@ -38,11 +39,14 @@ class MainActivity : AppCompatActivity(), UsersListeners {
             signOut()
         }
 
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-            if (task.isSuccessful && task.result != null) {
-                sendFCMTokenToDatabase(task.result!!.token)
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
             }
-        }
+
+            // Get new FCM registration token
+            sendFCMTokenToDatabase(task.result!!)
+        })
 
         binding.usersRecyclerView.adapter = usersAdapter
         usersAdapter.setListener(this)
@@ -69,7 +73,7 @@ class MainActivity : AppCompatActivity(), UsersListeners {
                                     firstName = documentSnapshot.getString(Constants.KEY_FIRST_NAME)!!,
                                     lastName = documentSnapshot.getString(Constants.KEY_LAST_NAME)!!,
                                     email = documentSnapshot.getString(Constants.KEY_EMAIL)!!,
-                                    token = documentSnapshot.id
+                                    token = documentSnapshot.getString(Constants.KEY_FCM_TOKEN) ?: ""
                                 )
                                 listUsers.add(user)
                             }
