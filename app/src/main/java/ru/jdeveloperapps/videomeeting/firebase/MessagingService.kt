@@ -1,6 +1,7 @@
 package ru.jdeveloperapps.videomeeting.firebase
 
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import ru.jdeveloperapps.videomeeting.activities.IncomingInvitationActivity
@@ -37,9 +38,21 @@ class MessagingService : FirebaseMessagingService() {
                         Constants.KEY_EMAIL,
                         remoteMessage.data.get(Constants.KEY_EMAIL)
                     )
+                    putExtra(
+                        Constants.REMOTE_MSG_INVITER_TOKEN,
+                        remoteMessage.data.get(Constants.REMOTE_MSG_INVITER_TOKEN)
+                    )
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 startActivity(intent)
+            }
+            if (it == Constants.REMOTE_MSG_INVITATION_RESPONSE) {
+                val intent = Intent(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+                intent.putExtra(
+                    Constants.REMOTE_MSG_INVITATION_RESPONSE,
+                    remoteMessage.data.get(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+                )
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
     }

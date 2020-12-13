@@ -1,8 +1,13 @@
 package ru.jdeveloperapps.videomeeting.activities
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
@@ -30,14 +35,7 @@ class OutgoingInvitationActivity : AppCompatActivity() {
 
         preferenceManager = PreferenceManager(applicationContext)
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@OnCompleteListener
-            }
 
-            // Get new FCM registration token
-            inviterToken = task.result
-        })
 
         val meetingType = intent.getStringExtra("type")
 
@@ -55,12 +53,20 @@ class OutgoingInvitationActivity : AppCompatActivity() {
         }
 
         binding.imageStopInvitation.setOnClickListener {
-            onBackPressed()
+            user?.let {
+                cancelInvitation(it.token)
+            }
         }
 
-        meetingType?.let {
-            initiateMeeting(it, user.token)
-        }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            inviterToken = task.result
+            meetingType?.let {
+                initiateMeeting(it, user.token)
+            }
+        })
 
     }
 
@@ -110,6 +116,13 @@ class OutgoingInvitationActivity : AppCompatActivity() {
                         "Invitation send successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                } else if (type == Constants.REMOTE_MSG_INVITATION_RESPONSE) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Invitation cancelled",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
                 }
             } else {
                 Toast.makeText(
@@ -120,5 +133,72 @@ class OutgoingInvitationActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun cancelInvitation(receiverToken: String) {
+        try {
+            val tokens = JSONArray()
+            tokens.put(receiverToken)
+
+            val body = JSONObject()
+            val data = JSONObject()
+
+            data.put(Constants.REMOTE_MSG_TYPE, Constants.REMOTE_MSG_INVITATION_RESPONSE)
+            data.put(
+                Constants.REMOTE_MSG_INVITATION_RESPONSE,
+                Constants.REMOTE_MSG_INVITATION_CANCELLED
+            )
+
+            body.put(Constants.REMOTE_MSG_DATA, data)
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
+
+            sendingRemoteMessage(body.toString(), Constants.REMOTE_MSG_INVITATION_RESPONSE)
+        } catch (e: Exception) {
+            Toast.makeText(
+                applicationContext,
+                "${e.message} что то с отправкой",
+                Toast.LENGTH_SHORT
+            ).show()
+            finish()
+        }
+    }
+
+    private val invitationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val type = intent.getStringExtra(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+            type.let {
+                when (it) {
+                    Constants.REMOTE_MSG_INVITATION_ACCEPTED -> {
+                        Toast.makeText(
+                            applicationContext,
+                            "Invitation accepted",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    Constants.REMOTE_MSG_INVITATION_REJECTED -> {
+                        Toast.makeText(
+                            applicationContext,
+                            "Invitation cancelled",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    }
+                }
+
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(
+            invitationReceiver,
+            IntentFilter(Constants.REMOTE_MSG_INVITATION_RESPONSE)
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(invitationReceiver)
     }
 }
