@@ -73,4 +73,7 @@ dependencies {
 
     //SwipeRefreshLayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    //jitsi
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.8.2') { transitive = true }
 }

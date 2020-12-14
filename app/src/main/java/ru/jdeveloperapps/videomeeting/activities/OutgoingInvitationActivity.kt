@@ -21,12 +21,14 @@ import ru.jdeveloperapps.videomeeting.models.User
 import ru.jdeveloperapps.videomeeting.network.RetrofitInstance
 import ru.jdeveloperapps.videomeeting.utilites.Constants
 import ru.jdeveloperapps.videomeeting.utilites.PreferenceManager
+import java.util.*
 
 class OutgoingInvitationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOutgpingInvitationBinding
     private lateinit var preferenceManager: PreferenceManager
     private var inviterToken: String? = null
+    var meetingRoom: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +89,9 @@ class OutgoingInvitationActivity : AppCompatActivity() {
             data.put(Constants.KEY_LAST_NAME, preferenceManager.getString(Constants.KEY_LAST_NAME))
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL))
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken)
+
+            meetingRoom = "${preferenceManager.getString(Constants.KEY_USER_ID)}_${UUID.randomUUID().toString().substring(0, 5)}"
+            data.put(Constants.REMOTE_MSG_MEETING_ROOM, meetingRoom)
 
             body.put(Constants.REMOTE_MSG_DATA, data)
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)

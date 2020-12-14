@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.jitsi.meet.sdk.JitsiMeetActivity
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.jdeveloperapps.videomeeting.R
 import ru.jdeveloperapps.videomeeting.databinding.ActivityIncomingInvitationBinding
 import ru.jdeveloperapps.videomeeting.network.RetrofitInstance
 import ru.jdeveloperapps.videomeeting.utilites.Constants
+import java.net.URL
 
 class IncomingInvitationActivity : AppCompatActivity() {
 
@@ -93,26 +96,38 @@ class IncomingInvitationActivity : AppCompatActivity() {
             )
             if (response.isSuccessful) {
                 if (type == Constants.REMOTE_MSG_INVITATION_ACCEPTED) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Invitation accepted",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    try {
+                        val serverURL = URL("https://meet.jit.si")
+                        val conferenceOptions = JitsiMeetConferenceOptions.Builder()
+                            .setServerURL(serverURL)
+                            .setWelcomePageEnabled(false)
+                            .setRoom(intent.getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
+                            .build()
+                        JitsiMeetActivity.launch(applicationContext, conferenceOptions)
+                        finish()
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            applicationContext,
+                            e.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    }
                 } else {
                     Toast.makeText(
                         applicationContext,
                         "Invitation rejected",
                         Toast.LENGTH_SHORT
                     ).show()
+                    finish()
                 }
-                finish()
             } else {
                 Toast.makeText(
                     applicationContext,
                     response.message(),
                     Toast.LENGTH_SHORT
                 ).show()
-
+                finish()
             }
         }
     }
